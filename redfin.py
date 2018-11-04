@@ -2,19 +2,14 @@
 
 import sys
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
-
-from selenium.webdriver import Firefox
 from time import sleep
 import requests
 from bs4 import BeautifulSoup
 from collections import OrderedDict
 import re
-from sets import Set
 import json
 from random import choice, randint
-from selenium.webdriver import Firefox
+from selenium.webdriver import Chrome
 from selenium.webdriver.firefox.webdriver import FirefoxProfile
 
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
@@ -58,7 +53,7 @@ class RedFin():
 
     def parse_finished_urls(self):
         #  function for removing urls that have already completed
-        done_urls_list = Set()
+        done_urls_list = set()
         for property_data in self.output_data:
             url = property_data['url'][22:]
             done_urls_list.add(url)
@@ -69,7 +64,7 @@ class RedFin():
     def get_search_results(self):
         page_source = self.request_search_page(self.start_url)
         self.property_urls = reg_property_urls.findall(page_source.replace('\\u002F', '/'))
-        self.property_urls = list(Set(self.property_urls))
+        self.property_urls = list(set(self.property_urls))
         print('found ' + str(len(self.property_urls)) + ' results')
         self.parse_finished_urls()
 
@@ -233,7 +228,7 @@ class RedFin():
             firefox_profile.set_preference("network.proxy.http_port", int(proxy_port))
             firefox_profile.set_preference("network.proxy.ssl", proxy_host)
             firefox_profile.set_preference("network.proxy.ssl_port", int(proxy_port))
-        self.driver = Firefox(firefox_profile)
+        self.driver = Chrome()
         self.driver.implicitly_wait(2)
 
     def get_page_selenium(self, page_url):
